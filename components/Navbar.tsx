@@ -31,12 +31,20 @@ export default function Navbar() {
           </Link>
         </nav>
 
-        <Link
-          href="/search"
-          className="rounded-full bg-teal px-5 py-2.5 font-body text-sm font-semibold text-cream shadow-sm transition duration-300 ease-smooth hover:bg-teal-light hover:shadow-md"
-        >
-          بحث
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/list-property"
+            className="hidden rounded-full border border-clay px-5 py-2.5 font-body text-sm font-semibold text-clay transition duration-300 ease-smooth hover:bg-clay hover:text-cream md:block"
+          >
+            أضف عقارك
+          </Link>
+          <Link
+            href="/search"
+            className="rounded-full bg-teal px-5 py-2.5 font-body text-sm font-semibold text-cream shadow-sm transition duration-300 ease-smooth hover:bg-teal-light hover:shadow-md"
+          >
+            بحث
+          </Link>
+        </div>
       </div>
     </header>
   );

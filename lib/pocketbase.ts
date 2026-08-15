@@ -44,15 +44,21 @@ export function imageUrl(record: any, filename: string, thumb?: string) {
   return `${PB_URL}/api/files/${LISTINGS_COLLECTION}/${record.id}/${filename}${query}`;
 }
 
-// Prices are Syrian Pounds (currency field is empty on every record, but the
-// magnitude — tens of billions — only makes sense as SYP, not USD).
-// Uses Arabic-locale compact notation so magnitudes read as "٢٠ مليار"-style
-// Arabic words (مليون/مليار/تريليون), not an English abbreviation like "20B".
+// Prices are shown in whatever currency the listing specifies. Older
+// records have an empty currency field, which only makes sense as Syrian
+// Pounds given the magnitude (tens of billions), so that's the fallback.
+const CURRENCY_LABELS: Record<string, string> = {
+  SYP: "ل.س",
+  USD: "$",
+};
+
 export function formatPrice(listing: Pick<Listing, "price" | "currency" | "listingType">) {
+  const code = listing.currency || "SYP";
+  const label = CURRENCY_LABELS[code] || code;
   const compact = new Intl.NumberFormat("ar", {
     notation: "compact",
     maximumFractionDigits: 1,
   }).format(listing.price);
   const suffix = listing.listingType === "rent" ? " شهرياً" : "";
-  return `${compact} ل.س${suffix}`;
+  return `${compact} ${label}${suffix}`;
 }

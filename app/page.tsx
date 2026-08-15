@@ -77,6 +77,25 @@ export default async function HomePage() {
         </section>
       )}
 
+      <section className="mx-auto max-w-6xl px-6 pt-16">
+        <div className="flex flex-col items-center gap-4 rounded-2xl bg-sand-light px-8 py-10 text-center md:flex-row md:justify-between md:text-start">
+          <div>
+            <h2 className="font-display text-2xl font-bold text-ink">
+              عندك عقار للبيع أو الإيجار؟
+            </h2>
+            <p className="mt-1 text-sm text-ink-soft">
+              أضف تفاصيل عقارك مجاناً، وسيراجعه فريق بيتي قبل نشره.
+            </p>
+          </div>
+          <a
+            href="/list-property"
+            className="rounded-xl bg-clay px-6 py-3 font-body text-sm font-semibold text-cream transition duration-300 ease-smooth hover:bg-clay-dark hover:shadow-md"
+          >
+            أضف عقارك الآن
+          </a>
+        </div>
+      </section>
+
       <section className="mx-auto max-w-6xl px-6 py-20">
         <div className="flex items-end justify-between">
           <div>

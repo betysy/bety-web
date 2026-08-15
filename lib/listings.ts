@@ -44,12 +44,18 @@ function mapRecord(record: any): Listing {
   };
 }
 
+// Only approved listings (or legacy records predating the status field,
+// which have it blank) should ever reach a public page. This is enforced
+// server-side by the PocketBase List/View API rule too, but filtering here
+// as well keeps the app's own logic self-documenting.
+const APPROVED_FILTER = '(status = "approved" || status = "")';
+
 export async function getFeaturedListings(limit = 6): Promise<Listing[]> {
   try {
     const client = pb();
     const result = await client
       .collection(LISTINGS_COLLECTION)
-      .getList(1, limit, { sort: "-created" });
+      .getList(1, limit, { filter: APPROVED_FILTER, sort: "-created" });
     return result.items.map(mapRecord);
   } catch (err) {
     console.error("Failed to load featured listings", err);
@@ -62,9 +68,10 @@ export async function getFeaturedListings(limit = 6): Promise<Listing[]> {
 export async function getPremiumListings(limit = 3): Promise<Listing[]> {
   try {
     const client = pb();
-    const result = await client
-      .collection(LISTINGS_COLLECTION)
-      .getList(1, limit, { filter: "isFeatured = true", sort: "-created" });
+    const result = await client.collection(LISTINGS_COLLECTION).getList(1, limit, {
+      filter: `isFeatured = true && ${APPROVED_FILTER}`,
+      sort: "-created",
+    });
     return result.items.map(mapRecord);
   } catch (err) {
     console.error("Failed to load premium listings", err);
@@ -80,16 +87,16 @@ export async function searchListings(params: {
   maxPrice?: string;
   page?: number;
 }): Promise<{ items: Listing[]; totalPages: number }> {
-  const filters: string[] = [];
+  const filters: string[] = [APPROVED_FILTER];
   if (params.q) {
     filters.push(
-      `titleAr ~ "${params.q}" || city ~ "${params.q}" || cityAr ~ "${params.q}"`
+      `(titleAr ~ "${params.q}" || city ~ "${params.q}" || cityAr ~ "${params.q}")`
     );
   }
   if (params.city) filters.push(`(city ~ "${params.city}" || cityAr ~ "${params.city}")`);
-  // listingType isn't a real PocketBase field with values set yet (it's
-  // inferred client-side from the title in mapRecord), so it can't be
-  // filtered server-side until a `goal` field is actually populated.
+  // listingType isn't reliably filterable server-side yet since older
+  // records have an empty `goal` field (see inferListingType above), so
+  // it's applied client-side after fetching instead.
   if (params.minPrice) filters.push(`price >= ${Number(params.minPrice)}`);
   if (params.maxPrice) filters.push(`price <= ${Number(params.maxPrice)}`);
 
