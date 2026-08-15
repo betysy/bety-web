@@ -16,26 +16,28 @@ export default async function HomePage() {
         <div className="tile-texture pointer-events-none absolute inset-0 opacity-[0.06]" />
         <div
           aria-hidden
-          className="pointer-events-none absolute -right-24 top-0 h-full w-[520px] opacity-90 arch-frame-wide"
+          className="pointer-events-none absolute -left-24 top-0 h-full w-[520px] opacity-90 arch-frame-wide"
           style={{
             background:
-              "linear-gradient(160deg, #E8DCC8 0%, #B5502A 55%, #8F3C1E 100%)",
+              "linear-gradient(200deg, #E8DCC8 0%, #B5502A 55%, #8F3C1E 100%)",
           }}
         />
         <div className="relative mx-auto max-w-6xl px-6 py-24 md:py-32">
-          <p className="font-arabic text-lg text-sand fade-up">بيتك يبدأ من هون</p>
+          <p className="fade-up text-lg text-sand">
+            بيتك يبدأ من هون
+          </p>
           <h1
-            className="fade-up mt-3 max-w-xl font-display text-5xl font-medium leading-[1.05] text-cream md:text-6xl"
+            className="fade-up mt-3 max-w-xl font-display text-5xl font-bold leading-[1.15] text-cream md:text-6xl"
             style={{ animationDelay: "80ms" }}
           >
-            Find your next home, across Syria.
+            دوّر على بيتك الجديد، بكل سوريا
           </h1>
           <p
             className="fade-up mt-5 max-w-md font-body text-cream/70"
             style={{ animationDelay: "160ms" }}
           >
-            Bety brings buyers, renters, and sellers together in one place —
-            apartments, villas, and land, listed by people who live there.
+            منصة بيتي تجمع المشترين والمستأجرين والبائعين في مكان واحد —
+            شقق وفلل وأراضٍ معروضة من أصحابها مباشرة.
           </p>
 
           <div
@@ -49,12 +51,9 @@ export default async function HomePage() {
             className="fade-up mt-10 flex max-w-3xl flex-wrap gap-x-10 gap-y-3 border-t border-cream/15 pt-6 text-sm text-cream/60"
             style={{ animationDelay: "320ms" }}
           >
-            <span>
-              <span className="font-mono text-cream">دمشق</span> · Damascus
-              listings live
-            </span>
-            <span>Verified by the Bety team</span>
-            <span>New listings added weekly</span>
+            <span>عقارات دمشق متوفرة الآن</span>
+            <span>معتمد من فريق بيتي</span>
+            <span>عقارات جديدة أسبوعياً</span>
           </div>
         </div>
       </section>
@@ -62,12 +61,12 @@ export default async function HomePage() {
       {premium.length > 0 && (
         <section className="border-b border-line bg-sand-light">
           <div className="mx-auto max-w-6xl px-6 py-16">
-            <p className="font-arabic text-gold">عقارات مميزة</p>
-            <h2 className="font-display text-3xl text-ink">
-              Featured selections
+            <p className="text-gold">عقارات مميزة</p>
+            <h2 className="font-display text-3xl font-bold text-ink">
+              عقارات مختارة بعناية
             </h2>
             <p className="mt-1 text-sm text-ink-soft">
-              Hand-picked listings, reviewed by the Bety team.
+              عقارات تمت مراجعتها من فريق بيتي.
             </p>
             <div className="mt-10 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
               {premium.map((listing) => (
@@ -81,16 +80,19 @@ export default async function HomePage() {
       <section className="mx-auto max-w-6xl px-6 py-20">
         <div className="flex items-end justify-between">
           <div>
-            <p className="font-arabic text-clay">أحدث العقارات</p>
-            <h2 className="font-display text-3xl text-ink">
-              Newest listings
+            <p className="text-clay">جديد</p>
+            <h2 className="font-display text-3xl font-bold text-ink">
+              أحدث العقارات
             </h2>
           </div>
           <a
             href="/search"
-            className="hidden font-body text-sm font-semibold text-teal transition hover:text-clay md:block"
+            className="hidden items-center gap-1 font-body text-sm font-semibold text-teal transition hover:text-clay md:flex"
           >
-            View all →
+            عرض الكل
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M10 6 4 12l6 6M4 12h16" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </a>
         </div>
 
@@ -102,12 +104,9 @@ export default async function HomePage() {
           </div>
         ) : (
           <div className="mt-10 rounded-2xl border border-dashed border-teal/20 bg-sand-light p-12 text-center">
-            <p className="font-display text-xl text-teal">
-              No listings yet
-            </p>
+            <p className="font-display text-xl text-teal">لا توجد عقارات بعد</p>
             <p className="mt-2 text-sm text-ink-soft">
-              Once properties are added in PocketBase, they'll appear here
-              automatically.
+              بمجرد إضافة العقارات، ستظهر هنا تلقائياً.
             </p>
           </div>
         )}

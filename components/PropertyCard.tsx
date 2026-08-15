@@ -34,10 +34,10 @@ function AreaIcon() {
 export default function PropertyCard({ listing }: { listing: Listing }) {
   const image = listing.images?.[0];
   const facts = [
-    listing.bedrooms ? { icon: <BedIcon />, label: `${listing.bedrooms}` } : null,
-    listing.bathrooms ? { icon: <BathIcon />, label: `${listing.bathrooms}` } : null,
-    listing.areaSqm ? { icon: <AreaIcon />, label: `${listing.areaSqm} m²` } : null,
-  ].filter(Boolean) as { icon: React.ReactNode; label: string }[];
+    listing.bedrooms ? { icon: <BedIcon />, label: `${listing.bedrooms}`, aria: "عدد غرف النوم" } : null,
+    listing.bathrooms ? { icon: <BathIcon />, label: `${listing.bathrooms}`, aria: "عدد الحمامات" } : null,
+    listing.areaSqm ? { icon: <AreaIcon />, label: `${listing.areaSqm} م²`, aria: "المساحة" } : null,
+  ].filter(Boolean) as { icon: React.ReactNode; label: string; aria: string }[];
 
   return (
     <Link
@@ -60,8 +60,8 @@ export default function PropertyCard({ listing }: { listing: Listing }) {
         )}
 
         {listing.isFeatured && (
-          <span className="absolute left-0 top-4 rounded-r-full bg-gold px-3 py-1 font-body text-[11px] font-bold uppercase tracking-wider text-teal-deep shadow-sm">
-            Featured
+          <span className="absolute right-0 top-4 rounded-l-full bg-gold px-3 py-1 font-body text-[11px] font-bold text-teal-deep shadow-sm">
+            مميز
           </span>
         )}
       </div>
@@ -72,13 +72,13 @@ export default function PropertyCard({ listing }: { listing: Listing }) {
             {listing.title}
           </h3>
           <span
-            className={`whitespace-nowrap rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide ${
+            className={`whitespace-nowrap rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
               listing.listingType === "rent"
                 ? "bg-clay/10 text-clay-dark"
                 : "bg-teal/10 text-teal"
             }`}
           >
-            {listing.listingType === "rent" ? "Rent" : "Sale"}
+            {listing.listingType === "rent" ? "إيجار" : "بيع"}
           </span>
         </div>
         {listing.city && (
@@ -90,7 +90,7 @@ export default function PropertyCard({ listing }: { listing: Listing }) {
         {facts.length > 0 && (
           <div className="mt-2 flex items-center gap-3 text-xs text-ink-soft">
             {facts.map((f, i) => (
-              <span key={i} className="flex items-center gap-1">
+              <span key={i} className="flex items-center gap-1" aria-label={f.aria}>
                 {f.icon}
                 {f.label}
               </span>

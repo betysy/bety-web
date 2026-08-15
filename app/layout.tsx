@@ -1,26 +1,23 @@
 import type { Metadata } from "next";
-import { Fraunces, Manrope, Tajawal, IBM_Plex_Mono } from "next/font/google";
+import { Amiri, Tajawal, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-fraunces",
-  weight: ["400", "500", "600"],
+// Amiri is a literary Arabic naskh serif — carries the same "characterful
+// headline face used with restraint" role Fraunces played, but one that
+// actually renders Arabic glyphs instead of silently falling back.
+const amiri = Amiri({
+  subsets: ["arabic"],
+  variable: "--font-display",
+  weight: ["400", "700"],
   style: ["normal", "italic"],
-});
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  variable: "--font-manrope",
-  weight: ["400", "500", "600", "700", "800"],
 });
 
 const tajawal = Tajawal({
   subsets: ["arabic"],
-  variable: "--font-tajawal",
-  weight: ["400", "500", "700"],
+  variable: "--font-body",
+  weight: ["400", "500", "700", "800"],
 });
 
 const plexMono = IBM_Plex_Mono({
@@ -30,9 +27,9 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bety بيتي — Real Estate in Syria",
+  title: "بيتي — عقارات في سوريا",
   description:
-    "Find apartments, villas, and land for sale or rent across Syria. Bety بيتي connects buyers, renters, and sellers in one place.",
+    "ابحث عن شقق وفلل وأراضٍ للبيع أو الإيجار في جميع أنحاء سوريا. بيتي يجمع المشترين والمستأجرين والبائعين في مكان واحد.",
 };
 
 export default function RootLayout({
@@ -41,9 +38,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="ar" dir="rtl">
       <body
-        className={`${fraunces.variable} ${manrope.variable} ${tajawal.variable} ${plexMono.variable} font-body bg-cream text-ink antialiased`}
+        className={`${amiri.variable} ${tajawal.variable} ${plexMono.variable} font-body bg-cream text-ink antialiased`}
       >
         <Navbar />
         <main>{children}</main>

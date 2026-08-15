@@ -30,13 +30,13 @@ export default function SearchBar({
         </svg>
         <div className="flex flex-1 flex-col gap-0.5">
           <label className="text-[11px] font-semibold uppercase tracking-wide text-ink-soft">
-            Search
+            بحث
           </label>
           <input
             type="text"
             name="q"
             defaultValue={defaultQ}
-            placeholder="Neighborhood, city, or keyword"
+            placeholder="الحي، المدينة، أو كلمة مفتاحية"
             className="bg-transparent font-body text-base text-ink placeholder:text-ink/35 focus:outline-none"
           />
         </div>
@@ -46,13 +46,13 @@ export default function SearchBar({
 
       <div className="flex flex-1 flex-col gap-0.5 px-2">
         <label className="text-[11px] font-semibold uppercase tracking-wide text-ink-soft">
-          City
+          المدينة
         </label>
         <input
           type="text"
           name="city"
           defaultValue={defaultCity}
-          placeholder="e.g. Damascus"
+          placeholder="مثال: دمشق"
           className="bg-transparent font-body text-base text-ink placeholder:text-ink/35 focus:outline-none"
         />
       </div>
@@ -61,16 +61,16 @@ export default function SearchBar({
 
       <div className="flex flex-col gap-0.5 px-2">
         <label className="text-[11px] font-semibold uppercase tracking-wide text-ink-soft">
-          Type
+          النوع
         </label>
         <select
           name="listingType"
           defaultValue={defaultType || ""}
           className="bg-transparent font-body text-base text-ink focus:outline-none"
         >
-          <option value="">Buy or rent</option>
-          <option value="sale">For sale</option>
-          <option value="rent">For rent</option>
+          <option value="">بيع أو إيجار</option>
+          <option value="sale">للبيع</option>
+          <option value="rent">للإيجار</option>
         </select>
       </div>
 
@@ -78,7 +78,7 @@ export default function SearchBar({
         type="submit"
         className="rounded-xl bg-clay px-8 py-3 font-body text-sm font-semibold text-cream transition duration-300 ease-smooth hover:bg-clay-dark hover:shadow-md"
       >
-        Search
+        بحث
       </button>
     </form>
   );

@@ -46,12 +46,13 @@ export function imageUrl(record: any, filename: string, thumb?: string) {
 
 // Prices are Syrian Pounds (currency field is empty on every record, but the
 // magnitude — tens of billions — only makes sense as SYP, not USD).
+// Uses Arabic-locale compact notation so magnitudes read as "٢٠ مليار"-style
+// Arabic words (مليون/مليار/تريليون), not an English abbreviation like "20B".
 export function formatPrice(listing: Pick<Listing, "price" | "currency" | "listingType">) {
-  const currency = listing.currency || "SYP";
-  const compact = new Intl.NumberFormat("en-US", {
+  const compact = new Intl.NumberFormat("ar", {
     notation: "compact",
     maximumFractionDigits: 1,
   }).format(listing.price);
-  const suffix = listing.listingType === "rent" ? "/mo" : "";
-  return `${compact} ${currency}${suffix}`;
+  const suffix = listing.listingType === "rent" ? " شهرياً" : "";
+  return `${compact} ل.س${suffix}`;
 }

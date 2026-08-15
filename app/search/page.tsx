@@ -3,7 +3,7 @@ import PropertyCard from "@/components/PropertyCard";
 import { searchListings } from "@/lib/listings";
 
 export const metadata = {
-  title: "Search listings — Bety بيتي",
+  title: "نتائج البحث — بيتي",
 };
 
 export default async function SearchPage({
@@ -26,8 +26,8 @@ export default async function SearchPage({
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-14">
-      <p className="font-arabic text-clay">تصفح العقارات</p>
-      <h1 className="font-display text-4xl text-ink">Browse listings</h1>
+      <p className="text-clay">تصفح العقارات</p>
+      <h1 className="font-display text-4xl font-bold text-ink">نتائج البحث</h1>
       <div className="mt-8">
         <SearchBar
           defaultQ={searchParams.q}
@@ -37,14 +37,15 @@ export default async function SearchPage({
       </div>
 
       <div className="mt-8 flex items-center gap-2 border-t border-line pt-6">
-        <span className="font-mono text-sm text-ink-soft">
-          {items.length > 0
-            ? `${items.length} listing${items.length === 1 ? "" : "s"}`
-            : "0 listings"}
+        <span className="font-mono text-sm text-ink-soft" dir="ltr">
+          {items.length}
+        </span>
+        <span className="text-sm text-ink-soft">
+          {items.length === 1 ? "عقار" : "عقارات"}
         </span>
         {items.length === 0 && (
           <span className="text-sm text-ink-soft">
-            — try a broader search or different city
+            — جرّب بحثاً أوسع أو مدينة مختلفة
           </span>
         )}
       </div>
@@ -57,10 +58,9 @@ export default async function SearchPage({
         </div>
       ) : (
         <div className="mt-8 rounded-2xl border border-dashed border-teal/20 bg-sand-light p-12 text-center">
-          <p className="font-display text-xl text-teal">No matches</p>
+          <p className="font-display text-xl text-teal">لا توجد نتائج مطابقة</p>
           <p className="mt-2 text-sm text-ink-soft">
-            Nothing fits those filters yet — adjust the search above and try
-            again.
+            عدّل خيارات البحث أعلاه وحاول مرة أخرى.
           </p>
         </div>
       )}

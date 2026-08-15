@@ -11,13 +11,13 @@ export async function generateMetadata({
   params: { id: string };
 }): Promise<Metadata> {
   const listing = await getListing(params.id);
-  if (!listing) return { title: "Listing not found — Bety بيتي" };
+  if (!listing) return { title: "لم يتم العثور على العقار — بيتي" };
 
   return {
-    title: `${listing.title} — Bety بيتي`,
-    description: `${listing.propertyType || "Property"} in ${
-      listing.city || "Syria"
-    } — ${listing.listingType === "rent" ? "for rent" : "for sale"} on Bety.`,
+    title: `${listing.title} — بيتي`,
+    description: `${listing.propertyType || "عقار"} في ${
+      listing.city || "سوريا"
+    } — ${listing.listingType === "rent" ? "للإيجار" : "للبيع"} على بيتي.`,
     openGraph: {
       title: listing.title,
       images: listing.images?.[0] ? [listing.images[0]] : [],
@@ -67,11 +67,11 @@ export default async function ListingPage({
     <article className="mx-auto max-w-5xl px-6 py-12">
       <nav className="mb-6 flex items-center gap-2 font-body text-sm text-ink-soft">
         <Link href="/" className="hover:text-teal">
-          Home
+          الرئيسية
         </Link>
         <span>/</span>
         <Link href="/search" className="hover:text-teal">
-          Listings
+          العقارات
         </Link>
         {listing.city && (
           <>
@@ -95,12 +95,12 @@ export default async function ListingPage({
               />
             ) : (
               <div className="flex h-full items-center justify-center text-teal/40">
-                <span className="font-display">No photo yet</span>
+                <span className="font-display">لا توجد صورة بعد</span>
               </div>
             )}
             {listing.isFeatured && (
-              <span className="absolute left-4 top-4 rounded-full bg-gold px-3 py-1 font-body text-xs font-bold uppercase tracking-wider text-teal-deep shadow-sm">
-                Featured
+              <span className="absolute right-4 top-4 rounded-full bg-gold px-3 py-1 font-body text-xs font-bold text-teal-deep shadow-sm">
+                مميز
               </span>
             )}
           </div>
@@ -114,7 +114,7 @@ export default async function ListingPage({
                 >
                   <Image
                     src={src}
-                    alt={`${listing.title} photo ${i + 2}`}
+                    alt={`${listing.title} — صورة ${i + 2}`}
                     fill
                     sizes="120px"
                     className="object-cover"
@@ -127,25 +127,25 @@ export default async function ListingPage({
           {(listing.bedrooms || listing.bathrooms || listing.areaSqm) && (
             <div className="mt-8 flex gap-8 rounded-xl border border-line bg-sand-light px-6 py-4">
               {listing.bedrooms ? (
-                <div className="flex items-center gap-2 text-ink">
+                <div className="flex items-center gap-2 text-ink" aria-label="عدد غرف النوم">
                   <FactIcon type="bed" />
-                  <span className="font-mono text-sm">
-                    {listing.bedrooms} bed{listing.bedrooms > 1 ? "s" : ""}
+                  <span className="font-mono text-sm" dir="ltr">
+                    {listing.bedrooms}
                   </span>
                 </div>
               ) : null}
               {listing.bathrooms ? (
-                <div className="flex items-center gap-2 text-ink">
+                <div className="flex items-center gap-2 text-ink" aria-label="عدد الحمامات">
                   <FactIcon type="bath" />
-                  <span className="font-mono text-sm">
-                    {listing.bathrooms} bath{listing.bathrooms > 1 ? "s" : ""}
+                  <span className="font-mono text-sm" dir="ltr">
+                    {listing.bathrooms}
                   </span>
                 </div>
               ) : null}
               {listing.areaSqm ? (
-                <div className="flex items-center gap-2 text-ink">
+                <div className="flex items-center gap-2 text-ink" aria-label="المساحة">
                   <FactIcon type="area" />
-                  <span className="font-mono text-sm">{listing.areaSqm} m²</span>
+                  <span className="font-mono text-sm">{listing.areaSqm} م²</span>
                 </div>
               ) : null}
             </div>
@@ -153,9 +153,7 @@ export default async function ListingPage({
 
           {listing.propertyType && (
             <div className="mt-8">
-              <h2 className="font-display text-xl text-ink">
-                About this property
-              </h2>
+              <h2 className="font-display text-xl text-ink">عن هذا العقار</h2>
               <p className="mt-3 font-body text-ink-soft">
                 {listing.propertyType}
                 {listing.address ? ` — ${listing.address}` : ""}
@@ -166,20 +164,20 @@ export default async function ListingPage({
 
         <aside className="h-fit rounded-2xl border border-line bg-cream p-6 shadow-card md:sticky md:top-24">
           <span
-            className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide ${
+            className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
               listing.listingType === "rent"
                 ? "bg-clay/10 text-clay-dark"
                 : "bg-teal/10 text-teal"
             }`}
           >
-            {listing.listingType === "rent" ? "For rent" : "For sale"}
+            {listing.listingType === "rent" ? "للإيجار" : "للبيع"}
           </span>
-          <h1 className="mt-3 font-display text-2xl leading-snug text-ink">
+          <h1 className="mt-3 font-display text-2xl font-bold leading-snug text-ink">
             {listing.title}
           </h1>
           {listing.city && (
             <p className="mt-1 text-sm text-ink-soft">
-              {listing.address ? `${listing.address}, ` : ""}
+              {listing.address ? `${listing.address}، ` : ""}
               {listing.city}
             </p>
           )}
@@ -191,10 +189,10 @@ export default async function ListingPage({
             href="mailto:syrian.experts.1@gmail.com"
             className="mt-6 block rounded-xl bg-clay py-3 text-center font-body text-sm font-semibold text-cream transition duration-300 ease-smooth hover:bg-clay-dark hover:shadow-md"
           >
-            Contact about this property
+            تواصل بخصوص هذا العقار
           </a>
           <p className="mt-3 text-center text-xs text-ink-soft">
-            Responses usually within a day
+            الرد عادة خلال يوم واحد
           </p>
         </aside>
       </div>

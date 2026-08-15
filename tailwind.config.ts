@@ -33,9 +33,8 @@ const config: Config = {
         line: "#E4DDCC",
       },
       fontFamily: {
-        display: ["var(--font-fraunces)", "serif"],
-        body: ["var(--font-manrope)", "sans-serif"],
-        arabic: ["var(--font-tajawal)", "sans-serif"],
+        display: ["var(--font-display)", "serif"],
+        body: ["var(--font-body)", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
       },
       boxShadow: {
