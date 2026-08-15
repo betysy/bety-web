@@ -13,25 +13,39 @@ export default function SearchBar({
     <form
       action="/search"
       method="get"
-      className="flex w-full flex-col gap-3 rounded-2xl bg-cream p-4 shadow-xl shadow-teal-deep/20 md:flex-row md:items-center md:gap-4 md:p-3"
+      className="flex w-full flex-col gap-3 rounded-2xl bg-cream p-4 shadow-lift md:flex-row md:items-center md:gap-2 md:p-3"
     >
-      <div className="flex flex-1 flex-col gap-1 px-2">
-        <label className="text-xs font-semibold uppercase tracking-wide text-ink/50">
-          Search
-        </label>
-        <input
-          type="text"
-          name="q"
-          defaultValue={defaultQ}
-          placeholder="Neighborhood, city, or keyword"
-          className="bg-transparent font-body text-base text-ink placeholder:text-ink/40 focus:outline-none"
-        />
+      <div className="flex flex-1 items-center gap-2 px-2">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          className="shrink-0 text-ink-soft"
+        >
+          <circle cx="11" cy="11" r="7" />
+          <path d="m21 21-4.35-4.35" strokeLinecap="round" />
+        </svg>
+        <div className="flex flex-1 flex-col gap-0.5">
+          <label className="text-[11px] font-semibold uppercase tracking-wide text-ink-soft">
+            Search
+          </label>
+          <input
+            type="text"
+            name="q"
+            defaultValue={defaultQ}
+            placeholder="Neighborhood, city, or keyword"
+            className="bg-transparent font-body text-base text-ink placeholder:text-ink/35 focus:outline-none"
+          />
+        </div>
       </div>
 
-      <div className="hidden h-10 w-px bg-ink/10 md:block" />
+      <div className="hidden h-10 w-px bg-line md:block" />
 
-      <div className="flex flex-1 flex-col gap-1 px-2">
-        <label className="text-xs font-semibold uppercase tracking-wide text-ink/50">
+      <div className="flex flex-1 flex-col gap-0.5 px-2">
+        <label className="text-[11px] font-semibold uppercase tracking-wide text-ink-soft">
           City
         </label>
         <input
@@ -39,14 +53,14 @@ export default function SearchBar({
           name="city"
           defaultValue={defaultCity}
           placeholder="e.g. Damascus"
-          className="bg-transparent font-body text-base text-ink placeholder:text-ink/40 focus:outline-none"
+          className="bg-transparent font-body text-base text-ink placeholder:text-ink/35 focus:outline-none"
         />
       </div>
 
-      <div className="hidden h-10 w-px bg-ink/10 md:block" />
+      <div className="hidden h-10 w-px bg-line md:block" />
 
-      <div className="flex flex-col gap-1 px-2">
-        <label className="text-xs font-semibold uppercase tracking-wide text-ink/50">
+      <div className="flex flex-col gap-0.5 px-2">
+        <label className="text-[11px] font-semibold uppercase tracking-wide text-ink-soft">
           Type
         </label>
         <select
@@ -62,7 +76,7 @@ export default function SearchBar({
 
       <button
         type="submit"
-        className="rounded-xl bg-clay px-8 py-3 font-body text-sm font-semibold text-cream transition hover:bg-clay-dark"
+        className="rounded-xl bg-clay px-8 py-3 font-body text-sm font-semibold text-cream transition duration-300 ease-smooth hover:bg-clay-dark hover:shadow-md"
       >
         Search
       </button>

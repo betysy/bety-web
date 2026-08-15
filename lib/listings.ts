@@ -57,6 +57,21 @@ export async function getFeaturedListings(limit = 6): Promise<Listing[]> {
   }
 }
 
+// Distinct from "newest" — these are the isFeatured=true records, meant for
+// a premium showcase strip at the top of the homepage.
+export async function getPremiumListings(limit = 3): Promise<Listing[]> {
+  try {
+    const client = pb();
+    const result = await client
+      .collection(LISTINGS_COLLECTION)
+      .getList(1, limit, { filter: "isFeatured = true", sort: "-created" });
+    return result.items.map(mapRecord);
+  } catch (err) {
+    console.error("Failed to load premium listings", err);
+    return [];
+  }
+}
+
 export async function searchListings(params: {
   q?: string;
   city?: string;

@@ -25,9 +25,10 @@ export default async function SearchPage({
   });
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-12">
-      <h1 className="font-display text-3xl text-ink">Browse listings</h1>
-      <div className="mt-6">
+    <div className="mx-auto max-w-6xl px-6 py-14">
+      <p className="font-arabic text-clay">تصفح العقارات</p>
+      <h1 className="font-display text-4xl text-ink">Browse listings</h1>
+      <div className="mt-8">
         <SearchBar
           defaultQ={searchParams.q}
           defaultCity={searchParams.city}
@@ -35,17 +36,34 @@ export default async function SearchPage({
         />
       </div>
 
-      <p className="mt-8 text-sm text-ink/60">
-        {items.length > 0
-          ? `Showing ${items.length} listing${items.length === 1 ? "" : "s"}`
-          : "No listings match your search yet."}
-      </p>
-
-      <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((listing) => (
-          <PropertyCard key={listing.id} listing={listing} />
-        ))}
+      <div className="mt-8 flex items-center gap-2 border-t border-line pt-6">
+        <span className="font-mono text-sm text-ink-soft">
+          {items.length > 0
+            ? `${items.length} listing${items.length === 1 ? "" : "s"}`
+            : "0 listings"}
+        </span>
+        {items.length === 0 && (
+          <span className="text-sm text-ink-soft">
+            — try a broader search or different city
+          </span>
+        )}
       </div>
+
+      {items.length > 0 ? (
+        <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          {items.map((listing) => (
+            <PropertyCard key={listing.id} listing={listing} />
+          ))}
+        </div>
+      ) : (
+        <div className="mt-8 rounded-2xl border border-dashed border-teal/20 bg-sand-light p-12 text-center">
+          <p className="font-display text-xl text-teal">No matches</p>
+          <p className="mt-2 text-sm text-ink-soft">
+            Nothing fits those filters yet — adjust the search above and try
+            again.
+          </p>
+        </div>
+      )}
 
       {totalPages > 1 && (
         <div className="mt-16 flex justify-center gap-2">
@@ -56,10 +74,10 @@ export default async function SearchPage({
                 ...searchParams,
                 page: String(p),
               } as Record<string, string>).toString()}`}
-              className={`h-9 w-9 rounded-full text-center font-body text-sm leading-9 ${
+              className={`h-9 w-9 rounded-full text-center font-mono text-sm leading-9 transition ${
                 p === page
                   ? "bg-teal text-cream"
-                  : "bg-sand-light text-ink/70 hover:bg-sand"
+                  : "bg-sand-light text-ink-soft hover:bg-sand"
               }`}
             >
               {p}

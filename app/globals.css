@@ -26,16 +26,24 @@ body {
   );
 }
 
+/* A very faint eight-point star tessellation — the geometric vocabulary of
+   Damascene tilework — used at low opacity as ambient texture, never as a
+   loud pattern. This is the one deliberate ornamental risk on the page. */
+.tile-texture {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='%23E8DCC8' stroke-width='1'%3E%3Cpath d='M28 2 L38 14 L54 14 L44 28 L54 42 L38 42 L28 54 L18 42 L2 42 L12 28 L2 14 L18 14 Z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 56px 56px;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .fade-up {
-    animation: fadeUp 0.6s ease-out both;
+    animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 }
 
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(14px);
   }
   to {
     opacity: 1;
@@ -45,5 +53,13 @@ body {
 
 :focus-visible {
   outline: 2px solid #b5502a;
-  outline-offset: 2px;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Numerals in prices should never wobble between proportional widths as
+   the value changes — tabular figures keep the mono price treatment calm. */
+.tabular-price {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
