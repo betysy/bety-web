@@ -1,26 +1,45 @@
 import { pb, LISTINGS_COLLECTION, imageUrl, type Listing } from "./pocketbase";
 
+// "goal" exists in the schema but is empty on current records, so fall back
+// to reading rent/sale off the Arabic title text.
+function inferListingType(record: any): "sale" | "rent" {
+  if (record.goal === "rent" || record.goal === "ايجار" || record.goal === "استئجار") {
+    return "rent";
+  }
+  if (record.goal === "sale" || record.goal === "بيع") {
+    return "sale";
+  }
+  const title: string = record.titleAr ?? "";
+  if (title.includes("ايجار") || title.includes("اجار") || title.includes("استئجار")) {
+    return "rent";
+  }
+  return "sale";
+}
+
 function mapRecord(record: any): Listing {
+  const rawImages = record.imageUrl;
+  const filenames: string[] = Array.isArray(rawImages)
+    ? rawImages
+    : rawImages
+    ? [rawImages]
+    : [];
+
   return {
     id: record.id,
-    title: record.title ?? "Untitled listing",
-    description: record.description ?? "",
+    title: record.titleAr || "Untitled listing",
     price: record.price ?? 0,
-    listingType: record.listingType ?? record.type ?? "sale",
-    propertyType: record.propertyType ?? "",
-    city: record.city ?? "",
-    address: record.address ?? "",
-    bedrooms: record.bedrooms ?? undefined,
-    bathrooms: record.bathrooms ?? undefined,
-    areaSqm: record.areaSqm ?? record.area ?? undefined,
-    images: Array.isArray(record.images)
-      ? record.images.map((f: string) => imageUrl(record, f))
-      : record.image
-      ? [imageUrl(record, record.image)]
-      : [],
-    latitude: record.latitude ?? undefined,
-    longitude: record.longitude ?? undefined,
-    status: record.status ?? "active",
+    currency: record.currency || undefined,
+    listingType: inferListingType(record),
+    propertyType: record.type ?? "",
+    city: record.cityAr || record.city || "",
+    address: record.addressAr || "",
+    bedrooms: record.rooms || undefined,
+    bathrooms: record.bathrooms || undefined,
+    areaSqm: record.area || undefined,
+    images: filenames.map((f) => imageUrl(record, f)),
+    latitude: record.lat ?? undefined,
+    longitude: record.lng ?? undefined,
+    isFeatured: record.isFeatured ?? false,
     created: record.created ?? "",
   };
 }
@@ -48,10 +67,14 @@ export async function searchListings(params: {
 }): Promise<{ items: Listing[]; totalPages: number }> {
   const filters: string[] = [];
   if (params.q) {
-    filters.push(`title ~ "${params.q}" || city ~ "${params.q}"`);
+    filters.push(
+      `titleAr ~ "${params.q}" || city ~ "${params.q}" || cityAr ~ "${params.q}"`
+    );
   }
-  if (params.city) filters.push(`city = "${params.city}"`);
-  if (params.listingType) filters.push(`listingType = "${params.listingType}"`);
+  if (params.city) filters.push(`(city ~ "${params.city}" || cityAr ~ "${params.city}")`);
+  // listingType isn't a real PocketBase field with values set yet (it's
+  // inferred client-side from the title in mapRecord), so it can't be
+  // filtered server-side until a `goal` field is actually populated.
   if (params.minPrice) filters.push(`price >= ${Number(params.minPrice)}`);
   if (params.maxPrice) filters.push(`price <= ${Number(params.maxPrice)}`);
 
@@ -63,7 +86,11 @@ export async function searchListings(params: {
         filter: filters.join(" && "),
         sort: "-created",
       });
-    return { items: result.items.map(mapRecord), totalPages: result.totalPages };
+    let items = result.items.map(mapRecord);
+    if (params.listingType === "sale" || params.listingType === "rent") {
+      items = items.filter((l) => l.listingType === params.listingType);
+    }
+    return { items, totalPages: result.totalPages };
   } catch (err) {
     console.error("Search failed", err);
     return { items: [], totalPages: 0 };

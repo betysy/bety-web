@@ -14,35 +14,29 @@ cp .env.example .env.local
 npm run dev
 ```
 
-## ⚠️ Before this works: fix PocketBase API rules
+## Field mapping (matches the real `properties` schema)
 
-While testing this build, listing requests came back **403 Forbidden** from
-`https://aalattar.pockethost.io/api/collections/pbc_2037580119/records`.
+`lib/listings.ts` maps the actual PocketBase fields: `titleAr`, `price`,
+`currency`, `city`, `cityAr`, `addressAr`, `area`, `rooms`, `bathrooms`,
+`type`, `goal`, `lat`, `lng`, `isFeatured`, `imageUrl`. There's no populated
+rent-vs-sale field yet (`goal` is empty on current records), so
+`inferListingType()` in `lib/listings.ts` reads it off keywords in the
+Arabic title instead. Once `goal` starts getting set to real values on new
+listings, update that function to read it directly.
 
-This means the collection's **List/View API rule** is currently locked down
-(only logged-in users, or nobody, can read it). For a public real estate
-site, anonymous visitors need to be able to *read* listings without logging
-in.
+Prices are Syrian Pounds (the `currency` field is empty on every record, but
+the magnitude — tens of billions — only makes sense as SYP). `formatPrice()`
+in `lib/pocketbase.ts` formats accordingly; adjust there if that assumption
+changes.
 
-**To fix:** open the PocketBase admin → Collections → `pbc_2037580119` →
-**API Rules** tab, and set the **List rule** and **View rule** to something
-like:
+## A note on public read access
 
-```
-status = "active"
-```
-
-(or leave them completely empty, which means "public"). Leave the
-**Create/Update/Delete** rules restricted to authenticated owners/admins —
-you only want reads to be public, not writes.
-
-## Verify your field names
-
-`lib/listings.ts` maps PocketBase records assuming field names like `title`,
-`price`, `listingType`, `city`, `bedrooms`, `bathrooms`, `areaSqm`, `images`.
-Open the collection schema in the PocketBase admin and adjust the field
-names in `lib/listings.ts` (`mapRecord` function) if yours differ — nothing
-else in the app needs to change.
+Earlier local testing hit a 403 on public listing reads, but the deployed
+Netlify site successfully fetched and displayed real listings, so the
+List/View API rule on `properties` appears to already allow public reads.
+If listings ever stop showing up on the live site specifically (not just in
+local dev), check Collections → `properties` → **API Rules** in the
+PocketBase admin first.
 
 ## Deploying on Netlify
 This repo includes `netlify.toml` with the official Next.js runtime plugin.

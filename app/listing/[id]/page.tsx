@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getListing } from "@/lib/listings";
+import { formatPrice } from "@/lib/pocketbase";
 import type { Metadata } from "next";
 
 export async function generateMetadata({
@@ -13,21 +14,14 @@ export async function generateMetadata({
 
   return {
     title: `${listing.title} — Bety بيتي`,
-    description:
-      listing.description?.slice(0, 155) ||
-      `${listing.propertyType || "Property"} in ${listing.city || "Syria"} — ${
-        listing.listingType === "rent" ? "for rent" : "for sale"
-      } on Bety.`,
+    description: `${listing.propertyType || "Property"} in ${
+      listing.city || "Syria"
+    } — ${listing.listingType === "rent" ? "for rent" : "for sale"} on Bety.`,
     openGraph: {
       title: listing.title,
       images: listing.images?.[0] ? [listing.images[0]] : [],
     },
   };
-}
-
-function formatPrice(price: number, listingType: string) {
-  const formatted = new Intl.NumberFormat("en-US").format(price);
-  return listingType === "rent" ? `$${formatted} / month` : `$${formatted}`;
 }
 
 export default async function ListingPage({
@@ -80,13 +74,14 @@ export default async function ListingPage({
             </div>
           )}
 
-          {listing.description && (
+          {listing.propertyType && (
             <div className="mt-8">
               <h2 className="font-display text-xl text-ink">
                 About this property
               </h2>
-              <p className="mt-3 whitespace-pre-line font-body text-ink/70">
-                {listing.description}
+              <p className="mt-3 font-body text-ink/70">
+                {listing.propertyType}
+                {listing.address ? ` — ${listing.address}` : ""}
               </p>
             </div>
           )}
@@ -106,7 +101,7 @@ export default async function ListingPage({
             </p>
           )}
           <p className="mt-4 font-display text-3xl text-clay">
-            {formatPrice(listing.price, listing.listingType)}
+            {formatPrice(listing)}
           </p>
 
           {(listing.bedrooms || listing.bathrooms || listing.areaSqm) && (

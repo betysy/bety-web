@@ -1,11 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Listing } from "@/lib/pocketbase";
-
-function formatPrice(price: number, listingType: string) {
-  const formatted = new Intl.NumberFormat("en-US").format(price);
-  return listingType === "rent" ? `$${formatted}/mo` : `$${formatted}`;
-}
+import { formatPrice, type Listing } from "@/lib/pocketbase";
 
 export default function PropertyCard({ listing }: { listing: Listing }) {
   const image = listing.images?.[0];
@@ -44,7 +39,7 @@ export default function PropertyCard({ listing }: { listing: Listing }) {
           <p className="mt-1 text-sm text-ink/60">{listing.city}</p>
         )}
         <p className="mt-2 font-display text-xl text-clay">
-          {formatPrice(listing.price, listing.listingType)}
+          {formatPrice(listing)}
         </p>
         {(listing.bedrooms || listing.bathrooms || listing.areaSqm) && (
           <p className="mt-1 text-xs text-ink/50">
