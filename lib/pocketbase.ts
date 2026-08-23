@@ -12,10 +12,9 @@ export function pb() {
 }
 
 /**
- * Field names below are best-guess placeholders based on common real-estate
- * schemas. Open your PocketBase admin → pbc_2037580119 → check the actual
- * field names, then adjust this type + the `record.*` lookups in
- * lib/listings.ts to match exactly. Nothing else in the app needs to change.
+ * Field names match exactly what bety_complete/lib/main.dart (the Flutter
+ * app) writes to this PocketBase collection — that app is the source of
+ * truth both platforms share, so these must stay in sync with it.
  */
 export type Listing = {
   id: string;
@@ -23,7 +22,7 @@ export type Listing = {
   description?: string;
   price: number;
   listingType: "sale" | "rent";
-  propertyType?: string; // apartment, villa, land, office, etc.
+  propertyType?: string; // شقة، فيلا، بيت، أرض ...
   city?: string;
   address?: string;
   bedrooms?: number;
@@ -32,7 +31,6 @@ export type Listing = {
   images?: string[]; // filenames stored in the PocketBase file field
   latitude?: number;
   longitude?: number;
-  status?: string;
   created?: string;
 };
 

@@ -8,29 +8,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        teal: {
-          DEFAULT: "#123832",
-          deep: "#0B2622",
-          light: "#1E4F47",
+        primary: {
+          DEFAULT: "#00C896",
+          dark: "#00A67D",
+          light: "#E5FBF4",
         },
-        sand: {
-          DEFAULT: "#E8DCC8",
-          light: "#F5EFE2",
-        },
-        clay: {
-          DEFAULT: "#B5502A",
-          dark: "#8F3C1E",
-        },
-        cream: "#FAF7F2",
-        ink: "#1A1A18",
+        ink: "#1A1A1A",
+        muted: "#6B7280",
+        surface: "#F7F8F9",
+        border: "#E5E7EB",
       },
       fontFamily: {
-        display: ["var(--font-fraunces)", "serif"],
-        body: ["var(--font-manrope)", "sans-serif"],
-        arabic: ["var(--font-tajawal)", "sans-serif"],
-      },
-      borderRadius: {
-        arch: "999px 999px 0 0",
+        body: ["var(--font-almarai)", "sans-serif"],
       },
     },
   },

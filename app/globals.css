@@ -7,23 +7,8 @@
 }
 
 body {
-  background-color: #faf7f2;
-  color: #1a1a18;
-}
-
-/* Signature motif: a keyhole arch, the recurring silhouette of Levantine
-   courtyard doorways and windows. Used to frame hero imagery and photos
-   throughout instead of generic rounded rectangles. */
-.arch-frame {
-  clip-path: path(
-    "M0,400 L0,140 C0,60 55,0 140,0 C225,0 280,60 280,140 L280,400 Z"
-  );
-}
-
-.arch-frame-wide {
-  clip-path: path(
-    "M0,600 L0,220 C0,100 110,0 280,0 C450,0 560,100 560,220 L560,600 Z"
-  );
+  background-color: #ffffff;
+  color: #1a1a1a;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -44,6 +29,10 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid #b5502a;
+  outline: 2px solid #00c896;
   outline-offset: 2px;
+}
+
+.leaflet-container {
+  font-family: var(--font-almarai), sans-serif;
 }

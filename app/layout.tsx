@@ -1,32 +1,19 @@
 import type { Metadata } from "next";
-import { Fraunces, Manrope, Tajawal } from "next/font/google";
+import { Almarai } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-fraunces",
-  weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
-});
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  variable: "--font-manrope",
-  weight: ["400", "500", "600", "700"],
-});
-
-const tajawal = Tajawal({
+const almarai = Almarai({
   subsets: ["arabic"],
-  variable: "--font-tajawal",
-  weight: ["400", "500", "700"],
+  variable: "--font-almarai",
+  weight: ["400", "700", "800"],
 });
 
 export const metadata: Metadata = {
-  title: "Bety بيتي — Real Estate in Syria",
+  title: "بيتي — عقارات في سوريا",
   description:
-    "Find apartments, villas, and land for sale or rent across Syria. Bety بيتي connects buyers, renters, and sellers in one place.",
+    "ابحث عن شقق وفلل وأراضٍ للبيع أو الإيجار في سوريا. بيتي يجمع المشترين والمستأجرين والبائعين في مكان واحد.",
 };
 
 export default function RootLayout({
@@ -35,9 +22,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="ar" dir="rtl">
       <body
-        className={`${fraunces.variable} ${manrope.variable} ${tajawal.variable} font-body bg-cream text-ink antialiased`}
+        className={`${almarai.variable} font-body bg-white text-ink antialiased`}
       >
         <Navbar />
         <main>{children}</main>

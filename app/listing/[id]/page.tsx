@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getListing } from "@/lib/listings";
+import { getListing, formatPriceSYP } from "@/lib/listings";
+import PropertyMap from "@/components/PropertyMap";
 import type { Metadata } from "next";
 
 export async function generateMetadata({
@@ -9,25 +10,20 @@ export async function generateMetadata({
   params: { id: string };
 }): Promise<Metadata> {
   const listing = await getListing(params.id);
-  if (!listing) return { title: "Listing not found — Bety بيتي" };
+  if (!listing) return { title: "الإعلان غير موجود — بيتي" };
 
   return {
-    title: `${listing.title} — Bety بيتي`,
+    title: `${listing.title} — بيتي`,
     description:
       listing.description?.slice(0, 155) ||
-      `${listing.propertyType || "Property"} in ${listing.city || "Syria"} — ${
-        listing.listingType === "rent" ? "for rent" : "for sale"
-      } on Bety.`,
+      `${listing.propertyType || "عقار"} في ${listing.city || "سوريا"} — ${
+        listing.listingType === "rent" ? "للإيجار" : "للبيع"
+      } على بيتي.`,
     openGraph: {
       title: listing.title,
       images: listing.images?.[0] ? [listing.images[0]] : [],
     },
   };
-}
-
-function formatPrice(price: number, listingType: string) {
-  const formatted = new Intl.NumberFormat("en-US").format(price);
-  return listingType === "rent" ? `$${formatted} / month` : `$${formatted}`;
 }
 
 export default async function ListingPage({
@@ -39,12 +35,13 @@ export default async function ListingPage({
   if (!listing) notFound();
 
   const [hero, ...rest] = listing.images ?? [];
+  const hasPin = listing.latitude != null && listing.longitude != null;
 
   return (
-    <article className="mx-auto max-w-5xl px-6 py-12">
+    <article className="mx-auto max-w-5xl px-6 py-10">
       <div className="grid grid-cols-1 gap-8 md:grid-cols-[1.3fr_1fr]">
         <div>
-          <div className="relative h-80 w-full overflow-hidden rounded-2xl bg-sand md:h-[420px]">
+          <div className="relative h-80 w-full overflow-hidden rounded-2xl bg-surface md:h-[420px]">
             {hero ? (
               <Image
                 src={hero}
@@ -55,8 +52,8 @@ export default async function ListingPage({
                 priority
               />
             ) : (
-              <div className="flex h-full items-center justify-center text-teal/40">
-                <span className="font-display">No photo yet</span>
+              <div className="flex h-full items-center justify-center text-muted">
+                <span className="font-body">لا توجد صورة بعد</span>
               </div>
             )}
           </div>
@@ -66,11 +63,11 @@ export default async function ListingPage({
               {rest.slice(0, 4).map((src, i) => (
                 <div
                   key={i}
-                  className="relative h-20 overflow-hidden rounded-lg bg-sand"
+                  className="relative h-20 overflow-hidden rounded-lg bg-surface"
                 >
                   <Image
                     src={src}
-                    alt={`${listing.title} photo ${i + 2}`}
+                    alt={`${listing.title} صورة ${i + 2}`}
                     fill
                     sizes="120px"
                     className="object-cover"
@@ -82,56 +79,71 @@ export default async function ListingPage({
 
           {listing.description && (
             <div className="mt-8">
-              <h2 className="font-display text-xl text-ink">
-                About this property
+              <h2 className="font-body text-lg font-extrabold text-ink">
+                عن هذا العقار
               </h2>
               <p className="mt-3 whitespace-pre-line font-body text-ink/70">
                 {listing.description}
               </p>
             </div>
           )}
+
+          {hasPin && (
+            <div className="mt-8">
+              <h2 className="font-body text-lg font-extrabold text-ink">
+                الموقع
+              </h2>
+              <div className="mt-3 h-64 overflow-hidden rounded-2xl border border-border">
+                <PropertyMap
+                  listings={[listing]}
+                  center={[listing.latitude!, listing.longitude!]}
+                  zoom={14}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
-        <aside className="h-fit rounded-2xl border border-teal/10 bg-cream p-6 shadow-lg shadow-teal-deep/5">
-          <span className="rounded-full bg-teal/10 px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-teal">
-            {listing.listingType === "rent" ? "For rent" : "For sale"}
+        <aside className="h-fit rounded-2xl border border-border bg-white p-6 shadow-lg shadow-black/5 md:sticky md:top-[80px]">
+          <span className="rounded-full bg-primary-light px-2.5 py-1 text-xs font-bold text-primary-dark">
+            {listing.listingType === "rent" ? "للإيجار" : "للبيع"}
           </span>
-          <h1 className="mt-3 font-display text-2xl text-ink">
+          <h1 className="mt-3 font-body text-xl font-extrabold text-ink">
             {listing.title}
           </h1>
           {listing.city && (
-            <p className="mt-1 text-sm text-ink/60">
-              {listing.address ? `${listing.address}, ` : ""}
+            <p className="mt-1 text-sm text-muted">
+              {listing.address ? `${listing.address} — ` : ""}
               {listing.city}
             </p>
           )}
-          <p className="mt-4 font-display text-3xl text-clay">
-            {formatPrice(listing.price, listing.listingType)}
+          <p className="mt-4 font-body text-2xl font-extrabold text-primary-dark">
+            {formatPriceSYP(listing.price, listing.listingType)}
           </p>
 
           {(listing.bedrooms || listing.bathrooms || listing.areaSqm) && (
-            <dl className="mt-6 grid grid-cols-3 gap-3 border-t border-teal/10 pt-6 text-center">
+            <dl className="mt-6 grid grid-cols-3 gap-3 border-t border-border pt-6 text-center">
+              {listing.areaSqm ? (
+                <div>
+                  <dt className="text-xs text-muted">المساحة</dt>
+                  <dd className="font-body text-lg font-bold text-ink">
+                    {listing.areaSqm} م²
+                  </dd>
+                </div>
+              ) : null}
               {listing.bedrooms ? (
                 <div>
-                  <dt className="text-xs uppercase text-ink/50">Beds</dt>
-                  <dd className="font-display text-lg text-ink">
+                  <dt className="text-xs text-muted">الغرف</dt>
+                  <dd className="font-body text-lg font-bold text-ink">
                     {listing.bedrooms}
                   </dd>
                 </div>
               ) : null}
               {listing.bathrooms ? (
                 <div>
-                  <dt className="text-xs uppercase text-ink/50">Baths</dt>
-                  <dd className="font-display text-lg text-ink">
+                  <dt className="text-xs text-muted">الحمامات</dt>
+                  <dd className="font-body text-lg font-bold text-ink">
                     {listing.bathrooms}
-                  </dd>
-                </div>
-              ) : null}
-              {listing.areaSqm ? (
-                <div>
-                  <dt className="text-xs uppercase text-ink/50">Area</dt>
-                  <dd className="font-display text-lg text-ink">
-                    {listing.areaSqm} m²
                   </dd>
                 </div>
               ) : null}
@@ -140,9 +152,9 @@ export default async function ListingPage({
 
           <a
             href="mailto:syrian.experts.1@gmail.com"
-            className="mt-6 block rounded-xl bg-clay py-3 text-center font-body text-sm font-semibold text-cream hover:bg-clay-dark"
+            className="mt-6 block rounded-xl bg-primary py-3 text-center font-body text-sm font-bold text-white hover:bg-primary-dark"
           >
-            Contact about this property
+            تواصل بخصوص هذا العقار
           </a>
         </aside>
       </div>

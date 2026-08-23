@@ -1,57 +1,62 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Listing } from "@/lib/pocketbase";
+import { formatPriceSYP } from "@/lib/listings";
 
-function formatPrice(price: number, listingType: string) {
-  const formatted = new Intl.NumberFormat("en-US").format(price);
-  return listingType === "rent" ? `$${formatted}/mo` : `$${formatted}`;
-}
+const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
 
 export default function PropertyCard({ listing }: { listing: Listing }) {
   const image = listing.images?.[0];
+  const isNew =
+    !!listing.created && Date.now() - new Date(listing.created).getTime() < THREE_DAYS_MS;
 
   return (
-    <Link
-      href={`/listing/${listing.id}`}
-      className="group block w-full max-w-xs"
-    >
-      <div className="relative mx-auto h-56 w-full max-w-[240px] overflow-hidden bg-teal/10 arch-frame">
+    <Link href={`/listing/${listing.id}`} className="group block w-full">
+      <div className="relative h-56 w-full overflow-hidden rounded-2xl bg-surface">
         {image ? (
           <Image
             src={image}
             alt={listing.title}
             fill
-            sizes="240px"
+            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
             className="object-cover transition duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-sand text-teal/40">
-            <span className="font-display text-sm">No photo yet</span>
+          <div className="flex h-full w-full items-center justify-center text-muted">
+            <span className="font-body text-sm">لا توجد صورة بعد</span>
           </div>
         )}
+        {listing.propertyType && (
+          <span className="absolute right-3 top-3 rounded-full bg-white px-3 py-1 text-xs font-bold text-primary-dark shadow">
+            {listing.propertyType}
+          </span>
+        )}
+        {isNew && (
+          <span className="absolute left-3 top-3 rounded-full bg-primary px-3 py-1 text-xs font-bold text-white">
+            جديد
+          </span>
+        )}
+        <span className="absolute bottom-3 right-3 rounded-full bg-primary px-3 py-1.5 text-sm font-extrabold text-white shadow">
+          {formatPriceSYP(listing.price, listing.listingType)}
+        </span>
       </div>
 
-      <div className="mt-4 px-1">
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="font-display text-lg leading-snug text-ink group-hover:text-teal">
-            {listing.title}
-          </h3>
-          <span className="whitespace-nowrap rounded-full bg-teal/10 px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-teal">
-            {listing.listingType === "rent" ? "Rent" : "Sale"}
-          </span>
-        </div>
+      <div className="mt-3 px-1">
+        <h3 className="truncate font-body text-base font-bold text-ink group-hover:text-primary-dark">
+          {listing.title}
+        </h3>
         {listing.city && (
-          <p className="mt-1 text-sm text-ink/60">{listing.city}</p>
+          <p className="mt-1 flex items-center gap-1 text-sm text-muted">
+            <span aria-hidden>📍</span>
+            {listing.address ? `${listing.address} — ${listing.city}` : listing.city}
+          </p>
         )}
-        <p className="mt-2 font-display text-xl text-clay">
-          {formatPrice(listing.price, listing.listingType)}
-        </p>
         {(listing.bedrooms || listing.bathrooms || listing.areaSqm) && (
-          <p className="mt-1 text-xs text-ink/50">
+          <p className="mt-1.5 text-sm text-ink/70">
             {[
-              listing.bedrooms ? `${listing.bedrooms} bd` : null,
-              listing.bathrooms ? `${listing.bathrooms} ba` : null,
-              listing.areaSqm ? `${listing.areaSqm} m²` : null,
+              listing.areaSqm ? `${listing.areaSqm} م²` : null,
+              listing.bedrooms ? `${listing.bedrooms} غرف` : null,
+              listing.bathrooms ? `${listing.bathrooms} حمام` : null,
             ]
               .filter(Boolean)
               .join(" · ")}
