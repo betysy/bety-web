@@ -18,8 +18,11 @@ function mapRecord(record: any): Listing {
     id: record.id,
     title: record.titleAr || "إعلان بدون عنوان",
     description: record.descriptionAr ?? "",
-    price: record.price ?? 0,
+    price: Number(record.price) || 0,
+    currency: String(record.currency ?? "").toUpperCase() === "USD" ? "USD" : "SYP",
     listingType: record.goal === "rent" ? "rent" : "sale",
+    contactName: record.contactName ?? "",
+    contactPhone: record.contactPhone ?? "",
     propertyType: record.type ?? "",
     city: record.city ?? "",
     address: record.addressAr ?? "",
@@ -37,15 +40,30 @@ function mapRecord(record: any): Listing {
   };
 }
 
-// Mirrors Property.priceLabel in bety_complete/lib/main.dart — prices are
-// stored as raw Syrian Pounds, not USD.
-export function formatPriceSYP(price: number, listingType: "sale" | "rent") {
-  const millions = price / 1_000_000;
-  const label =
-    millions >= 1
-      ? `${millions % 1 === 0 ? millions.toFixed(0) : millions.toFixed(1)} م.ل.س`
-      : `${price.toFixed(0)} ل.س`;
-  return listingType === "rent" ? `${label} · شهرياً` : label;
+// Mirrors formatPrice / Property.priceLabel in the Flutter app (v1.0.4+):
+// price is stored exactly as the lister typed it (no ×1,000,000), with a
+// currency of USD or SYP. Western digits with thousands separators.
+export function formatPrice(
+  price: number,
+  currency: "USD" | "SYP",
+  listingType: "sale" | "rent"
+) {
+  if (!price || price <= 0) return "السعر عند التواصل";
+  const symbol = currency === "USD" ? "$" : "ل.س";
+  const label = `${Math.round(price).toLocaleString("en-US")} ${symbol}`;
+  return listingType === "rent" ? `${label} / شهرياً` : label;
+}
+
+// Normalizes a stored Syrian phone number to digits with country code
+// (9639XXXXXXXX) for tel: and wa.me links. Returns "" if unusable.
+export function phoneDigits(raw?: string) {
+  let p = (raw ?? "").replace(/[^0-9+]/g, "");
+  if (!p) return "";
+  if (p.startsWith("+")) p = p.slice(1);
+  else if (p.startsWith("00")) p = p.slice(2);
+  else if (p.startsWith("0")) p = "963" + p.slice(1);
+  else if (!p.startsWith("963")) p = "963" + p;
+  return p.length >= 11 ? p : "";
 }
 
 export async function getFeaturedListings(limit = 6): Promise<Listing[]> {

@@ -5,7 +5,7 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import Link from "next/link";
 import type { Listing } from "@/lib/pocketbase";
-import { formatPriceSYP } from "@/lib/listings";
+import { formatPrice } from "@/lib/listings";
 
 // Same CartoDB Voyager tile source used by the Flutter app
 // (bety_complete/lib/main.dart, kTileUrl) for visual consistency.
@@ -58,7 +58,7 @@ export default function PropertyMapInner({
               {l.title}
             </Link>
             <div className="mt-1 font-body text-xs text-muted">
-              {formatPriceSYP(l.price, l.listingType)}
+              {formatPrice(l.price, l.currency, l.listingType)}
             </div>
           </Popup>
         </Marker>

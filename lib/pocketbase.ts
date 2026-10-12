@@ -20,8 +20,11 @@ export type Listing = {
   id: string;
   title: string;
   description?: string;
-  price: number;
+  price: number; // stored exactly as entered — no multiplier
+  currency: "USD" | "SYP"; // SYP = new Syrian pound (since 1 Jan 2026)
   listingType: "sale" | "rent";
+  contactName?: string;
+  contactPhone?: string;
   propertyType?: string; // شقة، فيلا، بيت، أرض ...
   city?: string;
   address?: string;

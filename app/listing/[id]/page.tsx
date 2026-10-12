@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getListing, formatPriceSYP } from "@/lib/listings";
+import { getListing, formatPrice, phoneDigits } from "@/lib/listings";
 import PropertyMap from "@/components/PropertyMap";
 import type { Metadata } from "next";
 
@@ -118,10 +118,10 @@ export default async function ListingPage({
             </p>
           )}
           <p className="mt-4 font-body text-2xl font-extrabold text-primary-dark">
-            {formatPriceSYP(listing.price, listing.listingType)}
+            {formatPrice(listing.price, listing.currency, listing.listingType)}
           </p>
 
-          {(listing.bedrooms || listing.bathrooms || listing.areaSqm) && (
+          {((listing.bedrooms ?? 0) > 0 || (listing.bathrooms ?? 0) > 0 || (listing.areaSqm ?? 0) > 0) && (
             <dl className="mt-6 grid grid-cols-3 gap-3 border-t border-border pt-6 text-center">
               {listing.areaSqm ? (
                 <div>
@@ -150,11 +150,51 @@ export default async function ListingPage({
             </dl>
           )}
 
+          {phoneDigits(listing.contactPhone) ? (
+            <div className="mt-6 space-y-3">
+              {listing.contactName && (
+                <p className="text-sm text-muted">المعلن: {listing.contactName}</p>
+              )}
+              <div className="grid grid-cols-2 gap-3">
+                <a
+                  href={`tel:+${phoneDigits(listing.contactPhone)}`}
+                  className="block rounded-xl bg-primary py-3 text-center font-body text-sm font-bold text-white hover:bg-primary-dark"
+                >
+                  اتصال
+                </a>
+                <a
+                  href={`https://wa.me/${phoneDigits(listing.contactPhone)}?text=${encodeURIComponent(
+                    `مرحباً، أنا مهتم بعقارك على بيتي: ${listing.title}\nhttps://betysyria.com/listing/${listing.id}`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block rounded-xl bg-[#25D366] py-3 text-center font-body text-sm font-bold text-white hover:opacity-90"
+                >
+                  واتساب
+                </a>
+              </div>
+            </div>
+          ) : (
+            <a
+              href={`mailto:syrian.experts.1@gmail.com?subject=${encodeURIComponent(
+                `استفسار عن عقار ${listing.id}`
+              )}&body=${encodeURIComponent(
+                `أرغب بالتواصل مع صاحب هذا العقار:\n${listing.title}\nhttps://betysyria.com/listing/${listing.id}`
+              )}`}
+              className="mt-6 block rounded-xl bg-primary py-3 text-center font-body text-sm font-bold text-white hover:bg-primary-dark"
+            >
+              تواصل عبر بيتي
+            </a>
+          )}
           <a
-            href="mailto:syrian.experts.1@gmail.com"
-            className="mt-6 block rounded-xl bg-primary py-3 text-center font-body text-sm font-bold text-white hover:bg-primary-dark"
+            href={`mailto:syrian.experts.1@gmail.com?subject=${encodeURIComponent(
+              `بلاغ عن إعلان ${listing.id}`
+            )}&body=${encodeURIComponent(
+              `سبب البلاغ:\nالرابط: https://betysyria.com/listing/${listing.id}`
+            )}`}
+            className="mt-3 block text-center text-xs text-muted hover:text-primary"
           >
-            تواصل بخصوص هذا العقار
+            الإبلاغ عن هذا الإعلان
           </a>
         </aside>
       </div>

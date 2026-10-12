@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Listing } from "@/lib/pocketbase";
-import { formatPriceSYP } from "@/lib/listings";
+import { formatPrice } from "@/lib/listings";
 
 const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
 
@@ -37,7 +37,7 @@ export default function PropertyCard({ listing }: { listing: Listing }) {
           </span>
         )}
         <span className="absolute bottom-3 right-3 rounded-full bg-primary px-3 py-1.5 text-sm font-extrabold text-white shadow">
-          {formatPriceSYP(listing.price, listing.listingType)}
+          {formatPrice(listing.price, listing.currency, listing.listingType)}
         </span>
       </div>
 
