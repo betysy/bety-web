@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>حذف الحساب — بيتي | Delete account</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&family=Tajawal:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--petrol:#0B7285;--petrol-deep:#075E5E;--ink:#12242A;--slate:#5B6B6A;--paper:#F6F4EF;--raised:#FFFFFF;--mist:#DCE3E1;--clay:#C8623A}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.8 Tajawal,system-ui,sans-serif}
+  header{background:var(--raised);border-bottom:1px solid var(--mist);padding:16px}
+  header .in,main{max-width:720px;margin:0 auto}
+  .brand{font:700 22px Cairo,sans-serif;color:var(--petrol);text-decoration:none}
+  main{padding:24px 16px 64px}
+  section{background:var(--raised);border:1px solid var(--mist);border-radius:12px;padding:20px 22px;margin-bottom:20px}
+  h1{font:700 26px/1.3 Cairo,sans-serif;margin:0 0 8px}
+  h2{font:700 18px/1.4 Cairo,sans-serif;color:var(--petrol-deep);margin:20px 0 8px}
+  a{color:var(--petrol)}
+  ol,ul{padding-inline-start:22px}
+  label{display:block;font-weight:500;margin:12px 0 4px}
+  input{width:100%;padding:12px;border:1px solid var(--mist);border-radius:10px;font:inherit;background:#fff}
+  button{margin-top:16px;width:100%;padding:14px;border:0;border-radius:12px;background:var(--clay);color:#fff;font:700 16px Cairo,sans-serif;cursor:pointer}
+  .note{color:var(--slate);font-size:14px}
+  [lang=en]{direction:ltr;text-align:left;font-family:system-ui,sans-serif}
+</style>
+</head>
+<body>
+<header><div class="in"><a class="brand" href="/">بيتي · Bety</a></div></header>
+<main>
+<section lang="ar">
+  <h1>حذف الحساب</h1>
+  <p>يمكنك حذف حسابك وجميع بياناتك (الاسم، رقم الهاتف، الإعلانات وصورها) في أي وقت.</p>
+  <h2>من داخل التطبيق</h2>
+  <ol>
+    <li>افتح تطبيق بيتي واذهب إلى تبويب <strong>حسابي</strong>.</li>
+    <li>اضغط <strong>حذف الحساب نهائياً</strong> ثم أكّد.</li>
+  </ol>
+  <h2>من هذه الصفحة</h2>
+  <label for="phone">رقم الهاتف المسجّل في بيتي</label>
+  <input id="phone" type="tel" dir="ltr" placeholder="+963 9XX XXX XXX" autocomplete="tel">
+  <button type="button" onclick="sendRequest()">إرسال طلب الحذف</button>
+  <p class="note">يفتح هذا رسالة بريد إلكتروني جاهزة إلى فريق بيتي. نحذف بياناتك خلال 30 يوماً ونرسل لك تأكيداً.
+  أو راسلنا مباشرة على <a href="mailto:syrian.experts.1@gmail.com">syrian.experts.1@gmail.com</a>.</p>
+  <h2>ما الذي يُحذف</h2>
+  <ul>
+    <li>اسمك ورقم هاتفك</li>
+    <li>جميع إعلاناتك وصورها</li>
+  </ul>
+  <p class="note">المفضلة محفوظة على جهازك فقط وتُحذف بحذف التطبيق. اطّلع على <a href="/privacy-policy.html">سياسة الخصوصية</a>.</p>
+</section>
+
+<section lang="en">
+  <h1>Delete your Bety account</h1>
+  <p>You can delete your account and all its data (name, phone number, listings and their photos) at any time.</p>
+  <p><strong>In the app:</strong> open the <em>حسابي</em> (Account) tab → <em>حذف الحساب نهائياً</em> (Delete account) → confirm.</p>
+  <p><strong>Here:</strong> enter your phone number above and press the button, or email
+  <a href="mailto:syrian.experts.1@gmail.com">syrian.experts.1@gmail.com</a>. We delete your data within 30 days and confirm by email.</p>
+</section>
+</main>
+<script>
+function sendRequest() {
+  var phone = (document.getElementById('phone').value || '').trim();
+  if (phone.replace(/\D/g, '').length < 9) { document.getElementById('phone').focus(); return; }
+  var subject = encodeURIComponent('طلب حذف حساب — ' + phone);
+  var body = encodeURIComponent('أطلب حذف حسابي وجميع بياناتي من بيتي.\nرقم الهاتف: ' + phone + '\n');
+  window.location.href = 'mailto:syrian.experts.1@gmail.com?subject=' + subject + '&body=' + body;
+}
+</script>
+</body>
+</html>

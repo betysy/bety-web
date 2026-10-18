@@ -17,7 +17,7 @@ export default function Footer() {
               تواصل معنا
             </a>
             <a
-              href="https://betysy.github.io/bety-legal/"
+              href="/legal.html"
               className="hover:text-primary"
             >
               الخصوصية والشروط
