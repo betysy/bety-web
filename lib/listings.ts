@@ -37,7 +37,65 @@ function mapRecord(record: any): Listing {
     latitude: record.lat ?? undefined,
     longitude: record.lng ?? undefined,
     created: record.created ?? "",
+    floor: String(record.floor ?? "").trim(),
+    totalFloors: Number(record.totalFloors) || 0,
+    buildYear: Number(record.buildYear) || 0,
+    furnished: record.furnished ?? "",
+    finishing: record.finishing ?? "",
+    deedType: record.deedType ?? "",
+    hasElevator: record.hasElevator === true,
+    hasParking: record.hasParking === true,
+    solarPower: record.solarPower === true,
+    waterTank: record.waterTank === true,
+    hasBalcony: record.hasBalcony === true,
   };
+}
+
+const RESIDENTIAL = ["شقة", "فيلا", "بيت", "استوديو", "طابق"];
+export const isResidential = (t?: string) => RESIDENTIAL.includes(t ?? "");
+
+// Same rules as the app's Property.pricePerSqm / floorLabel.
+export function pricePerSqm(l: Listing) {
+  return l.listingType === "sale" && l.price > 0 && (l.areaSqm ?? 0) > 0
+    ? l.price / (l.areaSqm as number)
+    : null;
+}
+
+export function floorLabel(l: Listing) {
+  const f = /^\d+$/.test(l.floor ?? "") ? Number(l.floor) : null;
+  if (f === null) return "";
+  const name = f === 0 ? "أرضي" : String(f);
+  return l.totalFloors ? `${name} من ${l.totalFloors}` : name;
+}
+
+export const AMENITIES: { key: keyof Listing; label: string; icon: string }[] = [
+  { key: "hasElevator", label: "مصعد", icon: "🛗" },
+  { key: "hasParking", label: "موقف سيارة", icon: "🅿️" },
+  { key: "solarPower", label: "طاقة شمسية", icon: "☀️" },
+  { key: "waterTank", label: "خزان مياه", icon: "💧" },
+  { key: "hasBalcony", label: "بلكونة", icon: "🪟" },
+];
+
+/** Same city + same rent/sale first, then same type — mirrors the app's
+ *  "عقارات مشابهة" section. */
+export async function getSimilarListings(l: Listing, limit = 6): Promise<Listing[]> {
+  try {
+    const client = pb();
+    const result = await client.collection(LISTINGS_COLLECTION).getList(1, 40, {
+      filter: `id != "${escapeFilterValue(l.id)}" && ${goalFilter(l.listingType)}`,
+      sort: "-created",
+    });
+    const score = (o: Listing) =>
+      (o.city === l.city ? 2 : 0) + (o.propertyType === l.propertyType ? 2 : 0);
+    return result.items
+      .map(mapRecord)
+      .filter((o) => score(o) >= 2)
+      .sort((a, b) => score(b) - score(a))
+      .slice(0, limit);
+  } catch (err) {
+    console.error("Failed to load similar listings", err);
+    return [];
+  }
 }
 
 // Mirrors formatPrice / Property.priceLabel in the Flutter app (v1.0.4+):

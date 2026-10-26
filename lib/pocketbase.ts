@@ -35,6 +35,18 @@ export type Listing = {
   latitude?: number;
   longitude?: number;
   created?: string;
+  // v1.0.7 details (app + PocketBase) — "" / 0 / false = not given.
+  floor?: string; // "0" = ground floor
+  totalFloors?: number;
+  buildYear?: number;
+  furnished?: string; // مفروش | نصف مفروش | غير مفروش
+  finishing?: string; // سوبر ديلوكس | ديلوكس | عادي | على العظم
+  deedType?: string; // طابو أخضر | حكم محكمة | كاتب عدل | أخرى
+  hasElevator?: boolean;
+  hasParking?: boolean;
+  solarPower?: boolean;
+  waterTank?: boolean;
+  hasBalcony?: boolean;
 };
 
 export function imageUrl(record: any, filename: string, thumb?: string) {

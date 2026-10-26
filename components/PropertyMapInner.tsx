@@ -14,7 +14,7 @@ const TILE_URL = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/
 const pinIcon = L.divIcon({
   className: "",
   html:
-    '<div style="width:16px;height:16px;border-radius:50%;background:#00C896;' +
+    '<div style="width:16px;height:16px;border-radius:50%;background:#0B7285;' +
     'border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.45)"></div>',
   iconSize: [16, 16],
   iconAnchor: [8, 8],

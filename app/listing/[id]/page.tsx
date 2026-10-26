@@ -1,6 +1,16 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getListing, formatPrice, phoneDigits } from "@/lib/listings";
+import {
+  getListing,
+  getSimilarListings,
+  formatPrice,
+  phoneDigits,
+  pricePerSqm,
+  floorLabel,
+  isResidential,
+  AMENITIES,
+} from "@/lib/listings";
+import PropertyCard from "@/components/PropertyCard";
 import PropertyMap from "@/components/PropertyMap";
 import type { Metadata } from "next";
 
@@ -36,6 +46,22 @@ export default async function ListingPage({
 
   const [hero, ...rest] = listing.images ?? [];
   const hasPin = listing.latitude != null && listing.longitude != null;
+  const similar = await getSimilarListings(listing);
+  const ppm = pricePerSqm(listing);
+  const symbol = listing.currency === "USD" ? "$" : "ل.س";
+  const floor = floorLabel(listing);
+  const facts: [string, string][] = [
+    ["النوع", listing.propertyType || ""],
+    ["العرض", listing.listingType === "rent" ? "للإيجار" : "للبيع"],
+    ["الطابق", floor],
+    ["الحمامات", listing.bathrooms ? String(listing.bathrooms) : ""],
+    ["الفرش", isResidential(listing.propertyType) ? listing.furnished ?? "" : ""],
+    ["الإكساء", listing.finishing ?? ""],
+    ["الملكية", listing.deedType ?? ""],
+    ["سنة البناء", listing.buildYear ? String(listing.buildYear) : ""],
+  ].filter((f): f is [string, string] => !!f[1]);
+  const amenities = AMENITIES.filter((a) => listing[a.key] === true);
+  const shortId = listing.id.slice(0, 6).toUpperCase();
 
   return (
     <article className="mx-auto max-w-5xl px-6 py-10">
@@ -60,7 +86,7 @@ export default async function ListingPage({
 
           {rest.length > 0 && (
             <div className="mt-3 grid grid-cols-4 gap-3">
-              {rest.slice(0, 4).map((src, i) => (
+              {rest.slice(0, 8).map((src, i) => (
                 <div
                   key={i}
                   className="relative h-20 overflow-hidden rounded-lg bg-surface"
@@ -74,6 +100,41 @@ export default async function ListingPage({
                   />
                 </div>
               ))}
+            </div>
+          )}
+
+          {facts.length > 0 && (
+            <div className="mt-8">
+              <h2 className="font-body text-lg font-extrabold text-ink">
+                تفاصيل العقار
+              </h2>
+              <dl className="mt-3 grid grid-cols-1 gap-x-8 sm:grid-cols-2">
+                {facts.map(([k, v]) => (
+                  <div
+                    key={k}
+                    className="flex items-center justify-between border-b border-border py-2.5"
+                  >
+                    <dt className="text-sm text-muted">{k}</dt>
+                    <dd className="font-body text-sm font-bold text-ink">{v}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          )}
+
+          {amenities.length > 0 && (
+            <div className="mt-6">
+              <h2 className="font-body text-lg font-extrabold text-ink">المزايا</h2>
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {amenities.map((a) => (
+                  <li
+                    key={a.label}
+                    className="rounded-full bg-primary-light px-3 py-1.5 text-sm font-bold text-primary-dark"
+                  >
+                    <span aria-hidden>{a.icon}</span> {a.label}
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
 
@@ -121,13 +182,13 @@ export default async function ListingPage({
             {formatPrice(listing.price, listing.currency, listing.listingType)}
           </p>
 
-          {((listing.bedrooms ?? 0) > 0 || (listing.bathrooms ?? 0) > 0 || (listing.areaSqm ?? 0) > 0) && (
+          {(ppm || (listing.bedrooms ?? 0) > 0 || (listing.areaSqm ?? 0) > 0) && (
             <dl className="mt-6 grid grid-cols-3 gap-3 border-t border-border pt-6 text-center">
-              {listing.areaSqm ? (
+              {ppm ? (
                 <div>
-                  <dt className="text-xs text-muted">المساحة</dt>
+                  <dt className="text-xs text-muted">سعر المتر</dt>
                   <dd className="font-body text-lg font-bold text-ink">
-                    {listing.areaSqm} م²
+                    {Math.round(ppm).toLocaleString("en-US")} {symbol}
                   </dd>
                 </div>
               ) : null}
@@ -139,11 +200,11 @@ export default async function ListingPage({
                   </dd>
                 </div>
               ) : null}
-              {listing.bathrooms ? (
+              {listing.areaSqm ? (
                 <div>
-                  <dt className="text-xs text-muted">الحمامات</dt>
+                  <dt className="text-xs text-muted">المساحة</dt>
                   <dd className="font-body text-lg font-bold text-ink">
-                    {listing.bathrooms}
+                    {listing.areaSqm} م²
                   </dd>
                 </div>
               ) : null}
@@ -196,8 +257,20 @@ export default async function ListingPage({
           >
             الإبلاغ عن هذا الإعلان
           </a>
+          <p className="mt-2 text-center text-xs text-muted">رقم الإعلان: {shortId}</p>
         </aside>
       </div>
+
+      {similar.length > 0 && (
+        <section className="mt-14">
+          <h2 className="font-body text-xl font-extrabold text-ink">عقارات مشابهة</h2>
+          <div className="mt-5 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {similar.map((l) => (
+              <PropertyCard key={l.id} listing={l} />
+            ))}
+          </div>
+        </section>
+      )}
     </article>
   );
 }
