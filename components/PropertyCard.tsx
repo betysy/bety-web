@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Listing } from "@/lib/pocketbase";
-import { formatPrice } from "@/lib/listings";
+import { formatPrice, pricePerSqm, floorLabel, isResidential } from "@/lib/listings";
 
 const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
 
@@ -57,9 +57,18 @@ export default function PropertyCard({ listing }: { listing: Listing }) {
               listing.areaSqm ? `${listing.areaSqm} م²` : null,
               listing.bedrooms ? `${listing.bedrooms} غرف` : null,
               listing.bathrooms ? `${listing.bathrooms} حمام` : null,
+              isResidential(listing.propertyType) && floorLabel(listing)
+                ? `طابق ${floorLabel(listing)}`
+                : null,
             ]
               .filter(Boolean)
               .join(" · ")}
+          </p>
+        )}
+        {pricePerSqm(listing) && (
+          <p className="mt-1 text-xs text-muted">
+            سعر المتر: {Math.round(pricePerSqm(listing) as number).toLocaleString("en-US")}{" "}
+            {listing.currency === "USD" ? "$" : "ل.س"}
           </p>
         )}
       </div>
