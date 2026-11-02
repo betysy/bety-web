@@ -1,3 +1,5 @@
+import { liveAppLinks } from "@/lib/appLinks";
+
 export default function Footer() {
   return (
     <footer className="mt-24 border-t border-border bg-ink">
@@ -24,6 +26,22 @@ export default function Footer() {
             </a>
           </div>
         </div>
+        {liveAppLinks.length > 0 && (
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <span className="text-sm font-bold text-white">حمّل تطبيق بيتي:</span>
+            {liveAppLinks.map((l) => (
+              <a
+                key={l.url}
+                href={l.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-lg border border-white/30 px-4 py-2 text-sm font-bold text-white hover:border-primary hover:text-primary"
+              >
+                {l.label}
+              </a>
+            ))}
+          </div>
+        )}
         <p className="mt-10 text-xs text-white/40">
           © {new Date().getFullYear()} بيتي. جميع الحقوق محفوظة.
         </p>
