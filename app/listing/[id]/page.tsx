@@ -179,7 +179,7 @@ export default async function ListingPage({
             </p>
           )}
           <p className="mt-4 font-body text-2xl font-extrabold text-primary-dark">
-            {formatPrice(listing.price, listing.currency, listing.listingType)}
+            {formatPrice(listing.price, listing.currency, listing.listingType, listing.rentPeriod)}
           </p>
 
           {(ppm || (listing.bedrooms ?? 0) > 0 || (listing.areaSqm ?? 0) > 0) && (

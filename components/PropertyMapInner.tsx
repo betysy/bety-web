@@ -58,7 +58,7 @@ export default function PropertyMapInner({
               {l.title}
             </Link>
             <div className="mt-1 font-body text-xs text-muted">
-              {formatPrice(l.price, l.currency, l.listingType)}
+              {formatPrice(l.price, l.currency, l.listingType, l.rentPeriod)}
             </div>
           </Popup>
         </Marker>

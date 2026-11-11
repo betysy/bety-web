@@ -17,6 +17,7 @@ export function pb() {
  * truth both platforms share, so these must stay in sync with it.
  */
 export type Listing = {
+  rentPeriod: "monthly" | "yearly"; // rentals: "" in DB = yearly (Syrian norm)
   id: string;
   title: string;
   description?: string;

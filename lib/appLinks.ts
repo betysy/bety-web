@@ -2,7 +2,7 @@
 // Set `live: true` on launch day, once the app is public in that store.
 export const APP_LINKS = {
   play: {
-    live: false,
+    live: true,
     url: "https://play.google.com/store/apps/details?id=sy.bety.properties",
     label: "Google Play",
   },

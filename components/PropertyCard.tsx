@@ -37,7 +37,7 @@ export default function PropertyCard({ listing }: { listing: Listing }) {
           </span>
         )}
         <span className="absolute bottom-3 right-3 rounded-full bg-primary px-3 py-1.5 text-sm font-extrabold text-white shadow">
-          {formatPrice(listing.price, listing.currency, listing.listingType)}
+          {formatPrice(listing.price, listing.currency, listing.listingType, listing.rentPeriod)}
         </span>
       </div>
 

@@ -21,6 +21,7 @@ function mapRecord(record: any): Listing {
     price: Number(record.price) || 0,
     currency: String(record.currency ?? "").toUpperCase() === "USD" ? "USD" : "SYP",
     listingType: record.goal === "rent" ? "rent" : "sale",
+    rentPeriod: record.rentPeriod === "monthly" ? "monthly" : "yearly",
     contactName: record.contactName ?? "",
     contactPhone: record.contactPhone ?? "",
     propertyType: record.type ?? "",
@@ -98,18 +99,21 @@ export async function getSimilarListings(l: Listing, limit = 6): Promise<Listing
   }
 }
 
-// Mirrors formatPrice / Property.priceLabel in the Flutter app (v1.0.4+):
+// Mirrors formatPrice / Property.priceLabel in the Flutter app (v1.0.11+):
+// rents are yearly unless the record says rentPeriod = "monthly".
 // price is stored exactly as the lister typed it (no ×1,000,000), with a
 // currency of USD or SYP. Western digits with thousands separators.
 export function formatPrice(
   price: number,
   currency: "USD" | "SYP",
-  listingType: "sale" | "rent"
+  listingType: "sale" | "rent",
+  rentPeriod: "monthly" | "yearly" = "yearly"
 ) {
   if (!price || price <= 0) return "السعر عند التواصل";
   const symbol = currency === "USD" ? "$" : "ل.س";
   const label = `${Math.round(price).toLocaleString("en-US")} ${symbol}`;
-  return listingType === "rent" ? `${label} / شهرياً` : label;
+  if (listingType !== "rent") return label;
+  return rentPeriod === "monthly" ? `${label} / شهرياً` : `${label} / سنوياً`;
 }
 
 // Normalizes a stored Syrian phone number to digits with country code
